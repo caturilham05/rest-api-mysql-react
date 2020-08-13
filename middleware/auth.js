@@ -20,7 +20,7 @@ exports.registrasi = function(req, res){
 
     query = mysql.format(query, table);
 
-    connection.query(query, function(error, row){
+    connection.query(query, function(error, row, fields){
         if(error){
             console.log(error)
         }else{
@@ -41,3 +41,55 @@ exports.registrasi = function(req, res){
         }
     })
 }
+
+// controller untuk login
+exports.login = function(req, res){
+    const post = {
+        email: req.body.email,
+        password: req.body.password
+    }
+
+    var query = "select * from ?? where ?? = ? and ?? = ?";
+    var table = ["user",  "email", post.email, "password", md5(post.password)];
+
+    query = mysql.format(query, table);
+    connection.query(query, function(err, row, fields){
+        if(err){
+            console.log(err)
+        }else{
+            if(row.length == 1){
+                var token = jwt.sign({row}, config.secret, {
+                    expiresIn: 1440
+                })
+                id_user = row[0].id;
+                
+                var data = {
+                    id_user: id_user,
+                    akses_token: token,
+                    ip_address: ip.address() 
+                }
+                var query = "insert into ?? set ?";
+                var table = ["akses_token"];
+    
+                query = mysql.format(query, table);
+                connection.query(query, data, function(err, row, fields){
+                    if(err){
+                        console.log(err)
+                    }else{
+                        res.json({
+                            success: true,
+                            message: 'token_JWT Generated!',
+                            token: token,
+                            currUser: data.id_user
+                        })
+                    }
+                })
+            }else{
+                res.json({
+                            "Error": true,
+                            "Message": "Email Atau Password Salah!"
+                        });
+            }
+        }
+    })
+} 
