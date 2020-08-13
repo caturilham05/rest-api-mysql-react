@@ -8,15 +8,15 @@ const ip = require('ip');
 
 //controller untuk pendaftaran user
 exports.registrasi = function(req, res){
-    const post = {
+    var post = {
         username: req.body.username,
         email: req.body.email,
         password: md5(req.body.password),
         role: req.body.role,
         tanggal_daftar: new Date()
     }
-    const query = "select email from ?? where ??";
-    const table = ["user", "email", post.email];
+    var query = "select email from ?? where ??=?";
+    var table = ["user", "email", post.email];
 
     query = mysql.format(query, table);
 
@@ -25,8 +25,8 @@ exports.registrasi = function(req, res){
             console.log(error)
         }else{
             if(row.length == 0){
-                const query = "insert into ?? set ?";
-                const table = ["user"];
+                var query = "insert into ?? set ?";
+                var table = ["user"];
                 query = mysql.format(query, table);
                 connection.query(query, post, function(err, row){
                     if(err){
@@ -36,7 +36,7 @@ exports.registrasi = function(req, res){
                     }
                 })
             }else{
-                response.ok("Email Sudah Terdaftar")
+                response.ok("Email Sudah Terdaftar", res)
             }
         }
     })
