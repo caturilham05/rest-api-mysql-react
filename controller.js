@@ -19,7 +19,7 @@ exports.tampilSemuaDataMahasiswa = function(req, res){
     })
 }
 
-//get data mahasiswa berdasarkan NIM
+//get data mahasiswa berdasarkan ID
 exports.tampilDataById = function(req, res){
     const nim = req.params.nim;
     connection.query('select * from mahasiswa where nim = ?', [nim],
@@ -117,7 +117,7 @@ exports.getMatkul = function(req, res){
 
 // menampilkan join krs, matkul, mhs
 exports.join = function(req, res){
-    connection.query('select mahasiswa.nim, mahasiswa.nama, mahasiswa.jurusan, matakuliah.matkul, matakuliah.sks from krs join mahasiswa JOIN matakuliah where krs.id_mahasiswa = mahasiswa.id_mahasiswa AND krs.id_matkul = matakuliah.id_matkul ORDER BY mahasiswa.id_mahasiswa',
+    connection.query('select mahasiswa.nim, mahasiswa.nama, mahasiswa.jurusan, matakuliah.matkul, matakuliah.sks from krs join mahasiswa JOIN matakuliah where krs.id_mahasiswa = mahasiswa.id_mahasiswa AND krs.id_matkul = matakuliah.id_matkul ORDER BY mahasiswa.id_mahasiswa ASC',
     function(err, row, fields){
         if(err){
             console.log(err)
